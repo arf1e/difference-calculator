@@ -9,3 +9,7 @@ lint:
 
 link:
 		npm link
+test:
+		npm test
+test-coverage:
+		npm test -- --coverage --coverage-provider=v8

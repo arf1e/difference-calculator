@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import generateDifference from '../src/generateDifference.js';
+import { outputDifferenceToConsole } from '../src/generateDifference.js';
 
 const program = new Command();
 
@@ -11,6 +11,8 @@ program
   .description('Compares two configuration files and shows a difference.')
   .helpOption('-h, --help', 'output usage information')
   .option('-f, --format [type]', 'output format')
-  .action((filepath1, filepath2, options) => generateDifference(filepath1, filepath2, options));
+  .action((filepath1, filepath2, options) => {
+    outputDifferenceToConsole(filepath1, filepath2, options);
+  });
 
 program.parse();
