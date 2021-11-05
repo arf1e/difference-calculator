@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import _ from 'lodash';
 import path from 'path';
+import getParserByExtension from './parsers.js';
 
 const DIFF_RESOLVERS = {
   equal: {
@@ -19,9 +20,11 @@ const DIFF_RESOLVERS = {
 
 const getObjectFromFileByPath = (inputPath) => {
   const filepath = path.isAbsolute(inputPath) ? inputPath : path.join(process.cwd(), inputPath);
-  const fileBuffer = readFileSync(filepath);
-  const fileParsedToJson = JSON.parse(fileBuffer);
-  return fileParsedToJson;
+  const ext = path.extname(filepath);
+  const parse = getParserByExtension(ext);
+  const fileBuffer = readFileSync(filepath, 'utf-8');
+  const fileParsedToObject = parse(fileBuffer);
+  return fileParsedToObject;
 };
 
 const getTypeOfChange = (key, obj1, obj2) => {
