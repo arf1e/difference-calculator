@@ -1,6 +1,8 @@
-name: lint
+name: Node CI
 
-on: push
+on: 
+  - push
+  - pull_request
 
 jobs:
   lint:
@@ -17,5 +19,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm install
         run: make install
+        env:
+          CI: true
       - name: lint
         run: make lint
+      - name: test // code coverage
+        uses: paambaati/codeclimate-action@v2.7.4
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
+          debug: true
