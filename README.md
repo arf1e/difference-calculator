@@ -1,6 +1,6 @@
 # GenDiff
 
-## Compares two configuration files and shows a difference.
+### Compares two configuration files and shows a difference.
 
 [![Actions Status](https://github.com/arf1e/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/arf1e/frontend-project-lvl2/actions)
 ![lint && test](https://github.com/arf1e/frontend-project-lvl2/actions/workflows/nodejs.yml/badge.svg)
@@ -9,6 +9,10 @@
 
 ## ASCIInemas
 
-### One-Level Deep
+### One-Level Deep | JSON
 
 [![asciicast](https://asciinema.org/a/Zj7xBdsS79tR3vvmb5wBK6Mac.png)](https://asciinema.org/a/Zj7xBdsS79tR3vvmb5wBK6Mac)
+
+### One-Level Deep | YAML
+
+[![asciicast](https://asciinema.org/a/59YjZWREV45mfrI45ONFrOYKu.png)](https://asciinema.org/a/59YjZWREV45mfrI45ONFrOYKu)
