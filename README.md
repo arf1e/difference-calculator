@@ -16,3 +16,7 @@
 ### One-Level Deep | YAML
 
 [![asciicast](https://asciinema.org/a/59YjZWREV45mfrI45ONFrOYKu.png)](https://asciinema.org/a/59YjZWREV45mfrI45ONFrOYKu)
+
+### Nested
+
+[![asciicast](https://asciinema.org/a/9XmjWymYezrV9bKCqHGSAhsE4.png)](https://asciinema.org/a/9XmjWymYezrV9bKCqHGSAhsE4)

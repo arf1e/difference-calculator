@@ -2,21 +2,50 @@ import { readFileSync } from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import getParserByExtension from './parsers.js';
+import getFormatterByFormat from './formatters/index.js';
 
-const DIFF_RESOLVERS = {
-  equal: {
-    resolver: (key, _obj1, obj2) => ({ [`  ${key}`]: obj2[key] }),
+const DIFF_RESOLVERS = [
+  {
+    kind: 'nested',
+    condition: (key, obj1, obj2) => _.isObject(obj1[key]) && _.isObject(obj2[key]),
+    resolver: (key, obj1, obj2, iterator) => ({ children: iterator(obj1[key], obj2[key]) }),
   },
-  updated: {
-    resolver: (key, obj1, obj2) => ({ [`- ${key}`]: obj1[key], [`+ ${key}`]: obj2[key] }),
+  {
+    kind: 'equal',
+    condition: (key, obj1, obj2) => _.has(obj1, key) && _.has(obj2, key) && obj1[key] === obj2[key],
+    resolver: (key, obj1) => ({ finalValue: obj1[key] }),
   },
-  created: {
-    resolver: (key, _obj1, obj2) => ({ [`+ ${key}`]: obj2[key] }),
+  {
+    kind: 'updated',
+    condition: (key, obj1, obj2) => _.has(obj1, key) && _.has(obj2, key) && obj1[key] !== obj2[key],
+    resolver: (key, obj1, obj2) => ({ initialValue: obj1[key], finalValue: obj2[key] }),
   },
-  deleted: {
-    resolver: (key, obj1) => ({ [`- ${key}`]: obj1[key] }),
+  {
+    kind: 'created',
+    condition: (key, obj1, obj2) => !_.has(obj1, key) && _.has(obj2, key),
+    resolver: (key, _obj1, obj2) => ({ finalValue: obj2[key] }),
   },
+  {
+    kind: 'deleted',
+    condition: (key, obj1, obj2) => _.has(obj1, key) && !_.has(obj2, key),
+    resolver: (key, obj1) => ({ initialValue: obj1[key] }),
+  },
+];
+
+const aggregateDifference = (acc, key, obj1, obj2, iterator) => {
+  const { kind, resolver } = DIFF_RESOLVERS.find((element) => element.condition(key, obj1, obj2));
+  return [...acc, { kind, key, ...resolver(key, obj1, obj2, iterator) }];
 };
+
+function getDifferenceBetweenObjects(obj1, obj2) {
+  const keys = _.union(Object.keys(obj1), Object.keys(obj2));
+  const sortedKeys = keys.sort();
+  const changes = sortedKeys.reduce((acc, key) => {
+    const iterator = getDifferenceBetweenObjects;
+    return aggregateDifference(acc, key, obj1, obj2, iterator);
+  }, []);
+  return changes;
+}
 
 const getObjectFromFileByPath = (inputPath) => {
   const filepath = path.isAbsolute(inputPath) ? inputPath : path.join(process.cwd(), inputPath);
@@ -27,42 +56,18 @@ const getObjectFromFileByPath = (inputPath) => {
   return fileParsedToObject;
 };
 
-const getTypeOfChange = (key, obj1, obj2) => {
-  const initialValue = obj1[key];
-  const finalValue = obj2[key];
-
-  if (_.has(obj1, key) && _.has(obj2, key)) {
-    return initialValue === finalValue ? 'equal' : 'updated';
-  }
-
-  if (_.has(obj1, key) && !_.has(obj2, key)) return 'deleted';
-
-  return 'created';
+const getFormattedDifference = (difference, formatter) => {
+  const output = formatter(difference);
+  return output;
 };
 
-const aggregateDifference = (acc, key, obj1, obj2) => {
-  const typeOfChange = getTypeOfChange(key, obj1, obj2);
-  const { resolver } = DIFF_RESOLVERS[typeOfChange];
-  const differenceObject = _.merge(acc, resolver(key, obj1, obj2));
-  return differenceObject;
-};
-
-const getDifferenceBetweenObjects = (obj1, obj2) => {
-  const keys = _.union(Object.keys(obj1), Object.keys(obj2));
-  const sortedKeys = keys.sort();
-  return sortedKeys.reduce((acc, key) => aggregateDifference(acc, key, obj1, obj2), {});
-};
-
-const generateDifference = (filepath1, filepath2) => {
+const generateDifference = (filepath1, filepath2, options) => {
+  const formatter = getFormatterByFormat(options ? options.format : 'stylish');
   const obj1 = getObjectFromFileByPath(filepath1);
   const obj2 = getObjectFromFileByPath(filepath2);
   const difference = getDifferenceBetweenObjects(obj1, obj2);
-  return difference;
-};
-
-export const outputDifferenceToConsole = (filepath1, filepath2) => {
-  const difference = generateDifference(filepath1, filepath2);
-  console.log(difference);
+  const formattedDifference = getFormattedDifference(difference, formatter);
+  return formattedDifference;
 };
 
 export default generateDifference;
