@@ -1,63 +1,102 @@
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import generateDifference from '../src/generateDifference.js';
 
-test('JSON | gendiff from two one-level deep objects', () => {
-  expect(generateDifference('__fixtures__/cases/file1.json', '__fixtures__/cases/file2.json')).toStrictEqual({
-    '- budget': 5000,
-    '+ budget': 0,
-    '- description': 'badly coded dating mobile app for weirdos',
-    '+ description': "famous philosopher's quote-of-the-day web-app",
-    '- domain': 'tellr.ru',
-    '+ domain': 'xanaxed-quotes.me',
-    '+ mascot': 'pablo technician',
-    '+ version': 'alpha1.4',
-    '- users': 1,
-  });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
-  expect(generateDifference('__fixtures__/cases/file1.json', '__fixtures__/cases/file3.json')).toStrictEqual({
-    '- budget': 5000,
-    '- description': 'badly coded dating mobile app for weirdos',
-    '- domain': 'tellr.ru',
-    '- users': 1,
-    '+ version': 1,
-  });
-
-  expect(generateDifference('__fixtures__/cases/file3.json', '__fixtures__/cases/file3.json')).toStrictEqual({
-    '  version': 1,
-  });
-});
-
-test('YAML | gendiff from two one-level deep objects', () => {
-  expect(generateDifference('__fixtures__/cases/file1.yml', '__fixtures__/cases/file2.yml')).toStrictEqual({
-    '- budget': 5000,
-    '+ budget': 0,
-    '- description': 'badly coded dating mobile app for weirdos',
-    '+ description': "famous philosopher's quote-of-the-day web-app",
-    '- domain': 'tellr.ru',
-    '+ domain': 'xanaxed-quotes.me',
-    '+ mascot': 'pablo technician',
-    '+ version': 'alpha1.4',
-    '- users': 1,
-  });
-
-  expect(generateDifference('__fixtures__/cases/file1.yml', '__fixtures__/cases/file3.yml')).toStrictEqual({
-    '- budget': 5000,
-    '- description': 'badly coded dating mobile app for weirdos',
-    '- domain': 'tellr.ru',
-    '- users': 1,
-    '+ version': 1,
-  });
-});
-
-test('JSON/YAML | gendiff from two one-level deep objects', () => {
-  expect(generateDifference('__fixtures__/cases/file1.yml', '__fixtures__/cases/file2.json')).toStrictEqual({
-    '- budget': 5000,
-    '+ budget': 0,
-    '- description': 'badly coded dating mobile app for weirdos',
-    '+ description': "famous philosopher's quote-of-the-day web-app",
-    '- domain': 'tellr.ru',
-    '+ domain': 'xanaxed-quotes.me',
-    '+ mascot': 'pablo technician',
-    '+ version': 'alpha1.4',
-    '- users': 1,
-  });
+test('Nested', () => {
+  const file1 = getFixturePath('file1.json');
+  const file2 = getFixturePath('file2.json');
+  expect(generateDifference(file1, file2)).toEqual(`{
+    common: {
+      + follow: false
+        setting1: Value 1
+      - setting2: 200
+      - setting3: true
+      + setting3: null
+      + setting4: blah blah
+      + setting5: {
+            key5: value5
+        }
+        setting6: {
+            doge: {
+              - wow: 
+              + wow: so much
+            }
+            key: value
+          + ops: vops
+        }
+    }
+    group1: {
+      - baz: bas
+      + baz: bars
+        foo: bar
+      - nest: {
+            key: value
+        }
+      + nest: str
+    }
+  - group2: {
+        abc: 12345
+        deep: {
+            id: 45
+        }
+    }
+  + group3: {
+        deep: {
+            id: {
+                number: 45
+            }
+        }
+        fee: 100500
+    }
+}`);
+  const yaml1 = getFixturePath('file1.yml');
+  const yaml2 = getFixturePath('file2.yml');
+  expect(generateDifference(yaml1, yaml2)).toEqual(`{
+    common: {
+      + follow: false
+        setting1: Value 1
+      - setting2: 200
+      - setting3: true
+      + setting3: null
+      + setting4: blah blah
+      + setting5: {
+            key5: value5
+        }
+        setting6: {
+            doge: {
+              - wow: 
+              + wow: so much
+            }
+            key: value
+          + ops: vops
+        }
+    }
+    group1: {
+      - baz: bas
+      + baz: bars
+        foo: bar
+      - nest: {
+            key: value
+        }
+      + nest: str
+    }
+  - group2: {
+        abc: 12345
+        deep: {
+            id: 45
+        }
+    }
+  + group3: {
+        deep: {
+            id: {
+                number: 45
+            }
+        }
+        fee: 100500
+    }
+}`);
 });
