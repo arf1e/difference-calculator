@@ -15,23 +15,19 @@ const stylish = (difference) => {
       const { key } = node;
       const initialValue = stringify(node.initialValue, depth);
       const finalValue = stringify(node.finalValue, depth);
-      let output;
       if (node.kind === 'nested') {
-        output = `${indentation}  ${key}: {\n${iter(node.children, nextLevelDepth).join('')}${indent(depth)}}\n`;
+        return `${indentation}  ${key}: {\n${iter(node.children, nextLevelDepth).join('')}${indent(depth)}}\n`;
       }
       if (node.kind === 'updated') {
-        output = decomposeUpdatedNode(node, indentation, initialValue, finalValue);
+        return decomposeUpdatedNode(node, indentation, initialValue, finalValue);
       }
       if (node.kind === 'created') {
-        output = generateLine(indentation, '+', key, finalValue);
+        return generateLine(indentation, '+', key, finalValue);
       }
       if (node.kind === 'deleted') {
-        output = generateLine(indentation, '-', key, initialValue);
+        return generateLine(indentation, '-', key, initialValue);
       }
-      if (node.kind === 'equal') {
-        output = generateLine(indentation, ' ', key, finalValue);
-      }
-      return output;
+      return generateLine(indentation, ' ', key, finalValue);
     });
   };
   return `{\n${iter(difference, 0).join('')}}`;
