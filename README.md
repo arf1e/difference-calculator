@@ -20,3 +20,7 @@
 ### Nested
 
 [![asciicast](https://asciinema.org/a/9XmjWymYezrV9bKCqHGSAhsE4.png)](https://asciinema.org/a/9XmjWymYezrV9bKCqHGSAhsE4)
+
+### Plain
+
+[![asciicast](https://asciinema.org/a/Ffw4leqLwlPrktei9s05Kk7jQ.png)](https://asciinema.org/a/Ffw4leqLwlPrktei9s05Kk7jQ)

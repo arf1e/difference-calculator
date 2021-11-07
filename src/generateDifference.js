@@ -61,8 +61,8 @@ const getFormattedDifference = (difference, formatter) => {
   return output;
 };
 
-const generateDifference = (filepath1, filepath2, options) => {
-  const formatter = getFormatterByFormat(options ? options.format : 'stylish');
+const generateDifference = (filepath1, filepath2, formatName = 'stylish') => {
+  const formatter = getFormatterByFormat(formatName);
   const obj1 = getObjectFromFileByPath(filepath1);
   const obj2 = getObjectFromFileByPath(filepath2);
   const difference = getDifferenceBetweenObjects(obj1, obj2);
