@@ -39,7 +39,7 @@ const aggregateDifference = (acc, key, obj1, obj2, iterator) => {
 
 function getDifferenceBetweenObjects(obj1, obj2) {
   const keys = _.union(Object.keys(obj1), Object.keys(obj2));
-  const sortedKeys = keys.sort();
+  const sortedKeys = _.sortBy(keys, (elt) => elt);
   const changes = sortedKeys.reduce((acc, key) => {
     const iterator = getDifferenceBetweenObjects;
     return aggregateDifference(acc, key, obj1, obj2, iterator);
