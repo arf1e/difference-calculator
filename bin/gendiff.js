@@ -12,7 +12,8 @@ program
   .helpOption('-h, --help', 'output usage information')
   .option('-f, --format [type]', 'output format', 'stylish')
   .action((filepath1, filepath2, options) => {
-    console.log(generateDifference(filepath1, filepath2, options));
+    const format = options.format || 'stylish';
+    console.log(generateDifference(filepath1, filepath2, format));
   });
 
 program.parse();
