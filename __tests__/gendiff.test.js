@@ -8,19 +8,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
-let file1;
-let file2;
-let yaml1;
-let yaml2;
-
-beforeEach(() => {
-  file1 = getFixturePath('file1.json');
-  file2 = getFixturePath('file2.json');
-  yaml1 = getFixturePath('file1.yml');
-  yaml2 = getFixturePath('file2.yml');
-});
-
 test('Nested', () => {
+  const file1 = getFixturePath('file1.json');
+  const file2 = getFixturePath('file2.json');
+  const yaml1 = getFixturePath('file1.yml');
+  const yaml2 = getFixturePath('file2.yml');
   expect(generateDifference(file1, file2)).toEqual(`{
     common: {
       + follow: false
@@ -112,6 +104,8 @@ test('Nested', () => {
 });
 
 test('Plain format', () => {
+  const file1 = getFixturePath('file1.json');
+  const file2 = getFixturePath('file2.json');
   expect(generateDifference(file1, file2, 'plain')).toEqual(`Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to null
@@ -126,5 +120,7 @@ Property 'group3' was added with value: [complex value]`);
 });
 
 test('JSON', () => {
+  const file1 = getFixturePath('file1.json');
+  const file2 = getFixturePath('file2.json');
   expect(generateDifference(file1, file2, 'json')).toEqual(JsonTestOutput);
 });
