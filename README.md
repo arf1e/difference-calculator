@@ -24,3 +24,7 @@
 ### Plain
 
 [![asciicast](https://asciinema.org/a/Ffw4leqLwlPrktei9s05Kk7jQ.png)](https://asciinema.org/a/Ffw4leqLwlPrktei9s05Kk7jQ)
+
+### JSON
+
+[![asciicast](https://asciinema.org/a/qsmy9upbzOmZoGKKDm9ypscHh.png)](https://asciinema.org/a/qsmy9upbzOmZoGKKDm9ypscHh)
