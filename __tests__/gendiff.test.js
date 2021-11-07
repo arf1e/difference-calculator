@@ -2,6 +2,8 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import generateDifference from '../src/generateDifference.js';
 
+import JsonTestOutput from '../__fixtures__/output';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
@@ -121,4 +123,8 @@ Property 'group1.baz' was updated. From 'bas' to 'bars'
 Property 'group1.nest' was updated. From [complex value] to 'str'
 Property 'group2' was removed
 Property 'group3' was added with value: [complex value]`);
+});
+
+test('JSON', () => {
+  expect(generateDifference(file1, file2, 'json')).toEqual(JsonTestOutput);
 });
